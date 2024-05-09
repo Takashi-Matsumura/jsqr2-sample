@@ -3,10 +3,14 @@
 import React, { useRef, useEffect, useState } from "react";
 import jsQR from "jsqr";
 
-const CameraStreamWithQRReader = () => {
+const CameraJsQR = () => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [qrCodeText, setQrCodeText] = useState("");
+
+  const resetQrCodeText = () => {
+    setQrCodeText("");
+  };
 
   useEffect(() => {
     // カメラへのアクセス
@@ -48,9 +52,11 @@ const CameraStreamWithQRReader = () => {
         if (code) {
           setQrCodeText(code.data);
         } else {
+          setQrCodeText("");
           requestAnimationFrame(scan);
         }
       } else {
+        setQrCodeText("");
         requestAnimationFrame(scan);
       }
     };
@@ -59,23 +65,21 @@ const CameraStreamWithQRReader = () => {
 
   return (
     <div className="flex flex-col w-1/2 items-center border-2">
-      <p className="text-center w-full">use jsQR</p>
+      <p className="text-center w-full font-bold text-xl pb-2">use jsQR</p>
       <video ref={videoRef} style={{ display: "none" }} />
       <canvas ref={canvasRef} style={{ display: "none" }} />
       <div>
-        <video
-          className="p-10"
-          ref={videoRef}
-          width="320"
-          height="240"
-          autoPlay
-        />
+        <video ref={videoRef} width="320" height="240" autoPlay />
       </div>
-      <p className="p-5 text-center w-full">
-        {qrCodeText ? `内容: {qrCodeText}` : "QRコードをかざして"}
-      </p>
+      <p className="p-5 text-center w-full pt-5 h-20">{qrCodeText}</p>
+      <button
+        onClick={resetQrCodeText}
+        className="bg-red-900 text-white px-2 py-1 mb-2"
+      >
+        reset
+      </button>
     </div>
   );
 };
 
-export default CameraStreamWithQRReader;
+export default CameraJsQR;
